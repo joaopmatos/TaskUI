@@ -9,7 +9,7 @@ This project **will be**:
 
 This project **will not be**:
 - Encompassing all the possible functionalities of the Windows Task Scheduler GUI
-- It's focus is on one sole platform
+- Cross platform: It's focus is on one sole platform
 
 # Functionalities And Technical details
 

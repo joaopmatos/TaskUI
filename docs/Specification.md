@@ -4,11 +4,12 @@ The project will encompass two things: a cli tool and a TUI on top of it. This u
 
 This project **will be**:
 - Small by design
+- Performant and simple
 - Focused on giving a better UX for doing repeated task management on windows
 
 This project **will not be**:
 - Encompassing all the possible functionalities of the Windows Task Scheduler GUI
-- Cross platform; it's focus is on one sole platform
+- It's focus is on one sole platform
 
 # Functionalities And Technical details
 

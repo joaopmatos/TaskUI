@@ -2,6 +2,10 @@
 
 Guidance for AI agents working in this repository.
 
+## Agent guidelines
+
+All agents must follow [AGENT_RULES.md](AGENT_RULES.md): mentor-not-ghostwriter, minimal examples with explanations, careful error handling, hint-first debugging, MUV architecture, testability, and security constraints.
+
 ## What this project is
 
 TaskUI is a Go TUI and CLI for managing Windows Task Scheduler tasks. It targets

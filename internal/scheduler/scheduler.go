@@ -1,6 +1,9 @@
 package scheduler
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 // Types
 
@@ -41,3 +44,11 @@ type Task struct {
 }
 
 type LastRunExitStatus int32
+
+type Scheduler interface {
+	List(ctx context.Context) (tasks []Task, err error)
+	Run(ctx context.Context, name string) (err error)
+	Enable(ctx context.Context, name string) (err error)
+	Disable(ctx context.Context, name string) (err error)
+	Delete(ctx context.Context, name string) (err error)
+}

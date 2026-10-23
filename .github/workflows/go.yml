@@ -17,12 +17,26 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Set up Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
-        go-version: '1.20'
+        go-version: '1.26.8'
+
+    # gofmt -l . lists all files that aren't properly formatted, wc -l counts them.
+    - name: Fmt
+      run: |
+        if [ "$(gofmt -l . | wc -l)" -gt 0 ]; then
+          gofmt -l .
+          exit 1
+        fi
+
+    - name: Vet
+      run: go vet ./...
 
     - name: Build
       run: go build -v ./...
 
     - name: Test
       run: go test -v ./...
+
+    - name: Build (Windows)
+      run: CGO_ENABLED=0 GOOS=windows go build -o taskui.exe .

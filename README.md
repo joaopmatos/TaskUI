@@ -18,7 +18,7 @@ engine is fully testable without a terminal or a Windows machine.
 ## Status
 
 - [x] `Task` model and `TaskState` enum/stringer (currently in `main.go`)
-- [ ] Move the model into `internal/scheduler`
+- [X] Move the model into `internal/scheduler`
 - [ ] `Scheduler` interface, in-memory fake, tests
 - [ ] CLI subcommands (`list|run|enable|disable|delete`)
 - [ ] TUI front-end (Bubble Tea), launched when no subcommand is given

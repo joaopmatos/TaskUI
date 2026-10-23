@@ -45,3 +45,15 @@ func list() {
 func run() {
 	println("TODO: implement list function!")
 }
+
+func enable() {
+	println("TODO: implement list function!")
+}
+
+func disable() {
+	println("TODO: implement list function!")
+}
+
+func delete() {
+	println("TODO: implement list function!")
+}

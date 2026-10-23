@@ -18,10 +18,10 @@ const (
 func (s Status) String() string {
 	states := [...]string{
 		"UNKNOWN",
-		"PENDING",
+		"DISABLED",
+		"QUEUED",
+		"READY",
 		"RUNNING",
-		"COMPLETED",
-		"FAILED",
 	}
 
 	// Make sure s exists in the array

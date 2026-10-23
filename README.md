@@ -4,34 +4,40 @@ A TUI (and CLI) for Windows Task Scheduler.
 
 ## Architecture
 
-Two thin front-ends over one UI-agnostic engine:
+One `taskui` binary with two front-ends over a single UI-agnostic engine:
 
 - `internal/scheduler` — the engine: the `Task` model, the `Scheduler`
   interface, and two backends: an in-memory fake (dev/tests) and the Windows
   backend (the real work).
-- `cmd/taskui` — CLI front-end.
-- `cmd/taskui-tui` — TUI front-end (Bubble Tea).
+- `main.go` — the entry point. With no arguments it launches the TUI; with a
+  subcommand (`list`, `run`, `enable`, `disable`, `delete`) it behaves as a CLI.
 
 Neither front-end contains domain logic; both call the same interface, so the
 engine is fully testable without a terminal or a Windows machine.
 
 ## Status
 
-- [ ] Engine: `Task` model, `Scheduler` interface, in-memory fake, tests
-- [ ] CLI front-end (`taskui list|run|enable|disable|delete`)
-- [ ] TUI front-end
-- [ ] Windows backend (`//go:build windows`)
+- [x] `Task` model and `TaskState` enum/stringer (currently in `main.go`)
+- [ ] Move the model into `internal/scheduler`
+- [ ] `Scheduler` interface, in-memory fake, tests
+- [ ] CLI subcommands (`list|run|enable|disable|delete`)
+- [ ] TUI front-end (Bubble Tea), launched when no subcommand is given
+- [ ] Windows backend using `ITaskService` (`//go:build windows`)
 
 ## Usage
 
 ```sh
-go run ./cmd/taskui list
-go run ./cmd/taskui run '\MyTasks\DailyBackup'
-go run ./cmd/taskui disable '\MyTasks\DailyBackup'
-go run ./cmd/taskui delete '\MyTasks\DailyBackup'
-go run ./cmd/taskui-tui      # interactive TUI
+go run . list
+go run . run '\MyTasks\DailyBackup'
+go run . disable '\MyTasks\DailyBackup'
+go run . delete '\MyTasks\DailyBackup'
+go run .                 # interactive TUI
 ```
 
+Cross-compile for Windows (pure-Go OLE requires cgo to be disabled):
+
 ```sh
-GOOS=windows go build ./...
+CGO_ENABLED=0 GOOS=windows go build -o taskui.exe .
 ```
+
+See [docs/Specification.md](docs/Specification.md) for the project scope and design.

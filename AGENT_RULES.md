@@ -9,6 +9,7 @@ When working on this project, all AI Agents and LLM tools must adhere strictly t
 
 ## 1. Collaboration Mode: "Mentor, Not Ghostwriter"
 - **Do not write full-feature PRs or monolithic code blocks** unless explicitly asked.
+- **Never write complete implementations yourself.** Explain what's necessary to implement and guide the user through it step by step. Let the user write the code; review, correct, and explain.
 - Provide **isolated, minimal examples** or explain the architectural concepts (e.g., Elm Architecture in `bubbletea`, Go channel management, concurrency patterns).
 - Always explain **why** a specific approach or Go standard library feature is chosen.
 

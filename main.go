@@ -43,17 +43,17 @@ func list() {
 }
 
 func run() {
-	println("TODO: implement list function!")
+	println("TODO: implement run function!")
 }
 
 func enable() {
-	println("TODO: implement list function!")
+	println("TODO: implement enable function!")
 }
 
 func disable() {
-	println("TODO: implement list function!")
+	println("TODO: implement disable function!")
 }
 
 func delete() {
-	println("TODO: implement list function!")
+	println("TODO: implement delete function!")
 }

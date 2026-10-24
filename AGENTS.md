@@ -64,18 +64,7 @@ tests where it fits. Tests must pass with `CGO_ENABLED=0`.
 
 ## Known issues / gotchas
 
-- `internal/shceduler` is an empty, misspelled, untracked directory. Use
-  `internal/scheduler` when creating the engine; the misspelled directory can be
-  removed (Git does not track empty directories).
-- The `TaskState` values in `main.go` (Unknown, Pending, Running, Completed,
-  Failed) do not match the Windows `TASK_STATE` enum (`UNKNOWN=0`, `DISABLED=1`,
-  `QUEUED=2`, `READY=3`, `RUNNING=4`). Align them when implementing the Windows
-  backend.
-- `Task.LastRunExitStatus` is typed as `Status` (task state), but an exit status
-  is not a task state. It should be its own type, likely the exit code/HRESULT.
 - `go.mod` includes Bubble Tea, Bubbles, and `github.com/go-ole/go-ole`.
-- Bubbles is not imported by any code yet. `go mod tidy` will remove it until the
-  TUI imports it; re-add it with `go get charm.land/bubbles/v2` when needed.
 - `go.mod` declares `go 1.26.8`; the local toolchain is newer. Keep both current.
 - A prebuilt `TaskUI` binary exists at the repository root. It is ignored by
   `.gitignore` (`TaskUI*`) and untracked; do not commit binaries.

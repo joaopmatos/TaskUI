@@ -3,6 +3,7 @@ package scheduler
 import (
 	"context"
 	"errors"
+	"sort"
 	"sync"
 	"time"
 )
@@ -49,10 +50,16 @@ func (fake *FakeScheduler) List(ctx context.Context) (ListResult, error) {
 	//Defer the unlock - guarantees we unlock even if we return early (or panic).
 	defer fake.mu.RUnlock()
 
+	//Initialize result array
 	result := make([]Task, 0, len(fake.tasks))
 	for _, task := range fake.tasks {
 		result = append(result, *task)
 	}
+
+	//Sort by path
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].Path < result[j].Path
+	})
 
 	return ListResult{Tasks: result}, nil
 }
@@ -69,17 +76,35 @@ func (fake *FakeScheduler) Run(ctx context.Context, path string) error {
 	//Defer the unlock - guarantees we unlock even if we return early (or panic).
 	defer fake.mu.Unlock()
 
+	//Find the task; check if we found it
 	task, ok := fake.tasks[path]
 	if !ok {
 		return ErrTaskNotFound
 	}
-	task.LastRun = time.Now()
-	task.LastRunExitStatus = 0
 
-	// For fake, keep status as-is or set to Ready after run
+	task.Status = TaskStateRunning
+
+	return nil
+}
+
+func (fake *FakeScheduler) Complete(path string, code uint32) error {
+	//Create a write lock
+	fake.mu.Lock()
+	defer fake.mu.Unlock()
+
+	task, ok := fake.tasks[path]
+	if !ok {
+		return ErrTaskNotFound
+	}
+
+	task.HasLastRun = true
+	task.LastRun = time.Now()
+	task.LastRunExitStatus = code
+
 	if task.Status == TaskStateRunning {
 		task.Status = TaskStateReady
 	}
+
 	return nil
 }
 

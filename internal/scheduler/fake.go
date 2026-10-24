@@ -30,15 +30,17 @@ func NewFake(tasks ...*Task) *FakeScheduler {
 
 		// store a copy: dereference and copy the struct
 		copy := *t
-		fake.tasks[copy.Name] = &copy
+		fake.tasks[copy.Path] = &copy
 	}
 	return fake
 }
 
-func (fake *FakeScheduler) List(ctx context.Context) ([]Task, error) {
+// Sorted by path
+// error is fatal only
+func (fake *FakeScheduler) List(ctx context.Context) (ListResult, error) {
 	//Check if we have the context
 	if err := ctx.Err(); err != nil {
-		return nil, err
+		return ListResult{}, err
 	}
 
 	//Create a read lock
@@ -48,13 +50,14 @@ func (fake *FakeScheduler) List(ctx context.Context) ([]Task, error) {
 	defer fake.mu.RUnlock()
 
 	result := make([]Task, 0, len(fake.tasks))
-	for _, t := range fake.tasks {
-		result = append(result, *t)
+	for _, task := range fake.tasks {
+		result = append(result, *task)
 	}
-	return result, nil
+
+	return ListResult{Tasks: result}, nil
 }
 
-func (fake *FakeScheduler) Run(ctx context.Context, name string) error {
+func (fake *FakeScheduler) Run(ctx context.Context, path string) error {
 	//Check if we have the context
 	if err := ctx.Err(); err != nil {
 		return err
@@ -66,7 +69,7 @@ func (fake *FakeScheduler) Run(ctx context.Context, name string) error {
 	//Defer the unlock - guarantees we unlock even if we return early (or panic).
 	defer fake.mu.Unlock()
 
-	task, ok := fake.tasks[name]
+	task, ok := fake.tasks[path]
 	if !ok {
 		return ErrTaskNotFound
 	}
@@ -80,7 +83,7 @@ func (fake *FakeScheduler) Run(ctx context.Context, name string) error {
 	return nil
 }
 
-func (fake *FakeScheduler) Enable(ctx context.Context, name string) error {
+func (fake *FakeScheduler) Enable(ctx context.Context, path string) error {
 	//Check if we have the context
 	if err := ctx.Err(); err != nil {
 		return err
@@ -92,7 +95,7 @@ func (fake *FakeScheduler) Enable(ctx context.Context, name string) error {
 	//Defer the unlock - guarantees we unlock even if we return early (or panic).
 	defer fake.mu.Unlock()
 
-	task, ok := fake.tasks[name]
+	task, ok := fake.tasks[path]
 	if !ok {
 		return ErrTaskNotFound
 	}
@@ -102,7 +105,7 @@ func (fake *FakeScheduler) Enable(ctx context.Context, name string) error {
 	return nil
 }
 
-func (fake *FakeScheduler) Disable(ctx context.Context, name string) error {
+func (fake *FakeScheduler) Disable(ctx context.Context, path string) error {
 	//Check if we have the context
 	if err := ctx.Err(); err != nil {
 		return err
@@ -114,7 +117,7 @@ func (fake *FakeScheduler) Disable(ctx context.Context, name string) error {
 	//Defer the unlock - guarantees we unlock even if we return early (or panic).
 	defer fake.mu.Unlock()
 
-	task, ok := fake.tasks[name]
+	task, ok := fake.tasks[path]
 	if !ok {
 		return ErrTaskNotFound
 	}
@@ -123,7 +126,7 @@ func (fake *FakeScheduler) Disable(ctx context.Context, name string) error {
 	return nil
 }
 
-func (fake *FakeScheduler) Delete(ctx context.Context, name string) error {
+func (fake *FakeScheduler) Delete(ctx context.Context, path string) error {
 	//Check if we have the context
 	if err := ctx.Err(); err != nil {
 		return err
@@ -136,10 +139,10 @@ func (fake *FakeScheduler) Delete(ctx context.Context, name string) error {
 	defer fake.mu.Unlock()
 
 	//_ is the blank identifier: we only care whether the key exists, not what it points to
-	if _, ok := fake.tasks[name]; !ok {
+	if _, ok := fake.tasks[path]; !ok {
 		return ErrTaskNotFound
 	}
 
-	delete(fake.tasks, name)
+	delete(fake.tasks, path)
 	return nil
 }
